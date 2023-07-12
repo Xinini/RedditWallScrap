@@ -12,6 +12,18 @@ USERNAME = config.username
 PASSWORD = config.password
 USER_AGENT = "RedditWallScraperz"
 
+#ctypes parameter idk
+SPI_SETDESKWALLPAPER = 20 
+
+
+def save_image(url, filename):
+    data = requests.get(url).content
+    f = open (filename, "wb")
+    f.write(data)
+    f.close()
+    #img = Image.open("img.png")
+    #img.show()  
+
 
 #Making a reddit instance
 reddit = praw.Reddit(client_id = CLIENT_ID,
@@ -20,26 +32,23 @@ reddit = praw.Reddit(client_id = CLIENT_ID,
                      password = PASSWORD,
                      user_agent = USER_AGENT
                      )
+#Get posts from wallpaper sub
+wallpapper_sub = reddit.subreddit(display_name="wallpaper").top(time_filter = "day", limit=6)
 
-wallpapper_sub = reddit.subreddit(display_name="wallpaper").top(time_filter = "day", limit=1)
-
+#Make recurssion?
 for post in wallpapper_sub:
-    if not post.stickied:
+    file_ext = post.url.split("/")[-1].split(".")[-1]
+    if not post.stickied and file_ext == "png":
         print(post.title + " " + post.url)
-    data = requests.get(post.url).content
-    f = open("img.jpg", "wb")
-    f.write(data)
-    f.close()
-    img = Image.open("img.jpg")
-    img.show()  
+        filename =  post.title + "." + file_ext
+        print(file_ext)
+        save_image(post.url, filename)
 
 
-SPI_SETDESKWALLPAPER = 20 
 
-fileName = "img.jpg"
+
 #path = "test2.png"
-path = "C:\\Users\\cnilo\\Documents\\Python Portfolio\\" + fileName
-print(path)
+path = "C:\\Users\\cnilo\\Documents\\Python Portfolio\\" + filename
 #path = os.getcwd().split(">")[0]
 ctypes.windll.user32.SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, path , 0)
 #print(path)
