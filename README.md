@@ -1,5 +1,4 @@
 # RedditWallScrap
 ## TODO LIST
-- Make a background folder with max. 7 pictures
+- Polish code
 - Start up on PC start and automate
-- Dynaimic paths
